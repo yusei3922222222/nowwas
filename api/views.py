@@ -1,3 +1,4 @@
+from datetime import timezone
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -27,13 +28,36 @@ class MyProfileListView(generics.ListAPIView):
     def get_queryset(self):
         return self.queryset.filter(userProfile=self.request.user)
 
-class NoteViewSet(viewsets.ModelViewSet):
-    queryset = Note.objects.all()
-    serializer_class = NoteSerializer
 class NoteList(generics.ListCreateAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Get the notes that are not expired (created within the last 5 minutes)
+        return Note.objects.filter(
+            usernote=self.request.user,
+            created_on__gte=timezone.now() - timezone.timedelta(minutes=5)
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(usernote=self.request.user)
+
+# NoteViewSetの実装を追加（詳細ページにも5分経過の制約を追加）
+class NoteViewSet(viewsets.ModelViewSet):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Get the notes that are not expired (created within the last 5 minutes)
+        return Note.objects.filter(
+            usernote=self.request.user,
+            created_on__gte=timezone.now() - timezone.timedelta(minutes=5)
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(usernote=self.request.user)
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = serializers.PostSerializer

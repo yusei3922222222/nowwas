@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.conf import settings
-
+from rest_framework.exceptions import ValidationError
+from django.utils import timezone
+from django.conf import settings
 
 def upload_avatar_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -70,6 +72,11 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
+    def is_expired(self):
+        # Check if the Note is older than 5 minutes
+        expiration_time = self.created_on + timezone.timedelta(minutes=5)
+        return timezone.now() > expiration_time
+
 class Post(models.Model):
     title = models.CharField(max_length=100)
     userPost = models.ForeignKey(
@@ -84,18 +91,18 @@ class Post(models.Model):
         return self.title
 
 
+def validate_comment_text(value):
+    forbidden_words = ["ぼけ", "まぬけ","かす"]
+    for word in forbidden_words:
+        if word in value:
+            raise ValidationError("不適切なコンテンツが含まれています。")
 class Comment(models.Model):
-    text = models.CharField(max_length=100)
+    text = models.CharField(max_length=100, validators=[validate_comment_text])
     userComment = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='userComment',
         on_delete=models.CASCADE
     )
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.text
-
-
 from django.db import models
 
 # Create your models here.
