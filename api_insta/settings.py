@@ -26,7 +26,7 @@ SECRET_KEY = '93sz7=ro#_8a(_(wk)e2z5l1q71%8x#djos2gm&el68b9gp98-'
 # SECURITY WARNING: don't run with debug turned on in production!
 
 
-ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -153,8 +153,6 @@ DEBUG = False
 # デフォルトは DEBUG = True
 
 ALLOWED_HOSTS = ["219.94.240.105"] # 独自ドメインを持っている方は独自ドメイン可
-#デフォルトは ALLOWED_HOSTS = []
-# ALLOWED_HOSTS = ["*"]でも良いみたいですが、全てを許可してしまうため推奨されていません。
 
-STATIC_ROOT = '/usr/share/nginx/html/' #collectstaticで静的ファイルが集まるディレクトリ
-#デフォルトはないので、新しく追加する
+
+STATIC_ROOT = '/usr/share/nginx/html/'
