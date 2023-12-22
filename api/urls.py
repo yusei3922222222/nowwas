@@ -8,7 +8,7 @@ app_name = 'user'
 
 router = DefaultRouter()
 router.register('profile',views.ProfileViewSet)
-router.register('note', NoteViewSet, basename='note')
+router.register('note', views.NoteViewSet)
 router.register('post', views.PostViewSet)
 router.register('comment', views.CommentViewSet)
 
@@ -17,7 +17,7 @@ router.register('comment', views.CommentViewSet)
 urlpatterns = [
     path('register/', views.CreateUserView.as_view(), name='register'),
     path('myprofile/', views.MyProfileListView.as_view(), name='myprofile'),
-    path('api/notes/', NoteList.as_view(), name='note-list'),
+    path('note/get/pending/', views.NoteList.as_view(), name='note-pending-list'),
     path('',include(router.urls))
 
 ]

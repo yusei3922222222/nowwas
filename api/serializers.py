@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Profile, Post, Comment
-from .models import Note
+from .models import Profile, Post, Comment, Note
+
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -21,9 +21,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'nickName', 'userProfile', 'created_on', 'img')
         extra_kwargs = {'userProfile': {'read_only': True}}
 class NoteSerializer(serializers.ModelSerializer):
+    created_on = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
     class Meta:
         model = Note
-        fields = '__all__'
+        fields = ('id', 'title', 'userNote', 'created_on')
+        extra_kwargs = {'userNote': {'read_only': True}}
 class PostSerializer(serializers.ModelSerializer):
     created_on = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
     class Meta:

@@ -149,10 +149,10 @@ AUTH_USER_MODEL = 'api.User'
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-DEBUG = False
+DEBUG = True
 # デフォルトは DEBUG = True
 
-ALLOWED_HOSTS = ["219.94.240.105"] # 独自ドメインを持っている方は独自ドメイン可
+ALLOWED_HOSTS = ["*"] # 独自ドメインを持っている方は独自ドメイン可
 
 
 STATIC_ROOT = '/usr/share/nginx/html/'

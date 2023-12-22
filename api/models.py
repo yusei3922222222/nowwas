@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.conf import settings
 from rest_framework.exceptions import ValidationError
 from django.utils import timezone
 from django.conf import settings
@@ -14,7 +13,9 @@ def upload_post_path(instance, filename):
     ext = filename.split('.')[-1]
     return '/'.join(['posts', str(instance.userPost.id) + str(instance.title) + str(".") + str(ext)])
 
-
+def upload_note_path(instance, filename):
+    ext = filename.split('.')[-1]
+    return '/'.join(['notes', str(instance.userNote.id) + str(instance.title) + str(".") + str(ext)])
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
         if not email:
@@ -63,8 +64,8 @@ class Profile(models.Model):
 
 class Note(models.Model):
     title = models.CharField(max_length=100)
-    usernote = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name='usernote',
+    userNote = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='userNote',
         on_delete=models.CASCADE
     )
     created_on = models.DateTimeField(auto_now_add=True)
@@ -72,10 +73,7 @@ class Note(models.Model):
     def __str__(self):
         return self.title
 
-    def is_expired(self):
-        # Check if the Note is older than 5 minutes
-        expiration_time = self.created_on + timezone.timedelta(minutes=5)
-        return timezone.now() > expiration_time
+
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
